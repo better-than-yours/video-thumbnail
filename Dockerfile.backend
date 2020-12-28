@@ -4,11 +4,13 @@ ARG VERSION
 
 COPY backend /srv/backend
 RUN cd /srv/backend && \
+    apk add --no-cache pkgconfig gcc musl-dev ffmpeg-dev && \
     go build -o app -ldflags "-X main.revision=${VERSION} -s -w" .
 
 FROM alpine
 
 COPY --from=build-backend /srv/backend/app /srv/app
+RUN apk add --no-cache ffmpeg-libs
 RUN mkdir -p /home/app && \
     adduser -s /bin/sh -D -u 1001 app && chown -R app:app /home/app
 RUN chown -R app:app /srv && \

@@ -3,6 +3,7 @@ package api
 
 import (
 	"fmt"
+	"image/png"
 	"log"
 	"net/http"
 	"time"
@@ -23,6 +24,24 @@ func (s *Server) Run(port int) {
 	router := chi.NewRouter()
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		render.PlainText(w, r, "OK")
+	})
+	router.Get("/thumbnail", func(w http.ResponseWriter, r *http.Request) {
+		url := r.URL.Query().Get("url")
+		if url == "" {
+			http.Error(w, http.StatusText(400), 400)
+			return
+		}
+		img, err := GetImage(url)
+		if err != nil {
+			http.Error(w, http.StatusText(500), 500)
+			return
+		}
+		w.Header().Set("Content-Type", "image/png")
+		err = png.Encode(w, img)
+		if err != nil {
+			http.Error(w, http.StatusText(500), 500)
+			return
+		}
 	})
 	s.httpServer = &http.Server{
 		Addr:              fmt.Sprintf(":%d", port),

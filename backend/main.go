@@ -1,9 +1,8 @@
 package main
 
 import (
+	"github.com/better-than-yours/video-thumbnail/api"
 	"github.com/joho/godotenv"
-
-	"github.com/better-than-yours/template-go-react/api"
 )
 
 func main() {
