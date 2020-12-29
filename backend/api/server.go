@@ -22,11 +22,11 @@ type Server struct {
 // Run starts http server for API with all routes
 func (s *Server) Run(port int) {
 	router := chi.NewRouter()
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 		render.PlainText(w, r, "OK")
 	})
-	router.Get("/{url}", func(w http.ResponseWriter, r *http.Request) {
-		url := chi.URLParam(r, "url")
+	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		url := r.URL.Query().Get("url")
 		if url == "" {
 			http.Error(w, http.StatusText(400), 400)
 			return
