@@ -25,8 +25,8 @@ func (s *Server) Run(port int) {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		render.PlainText(w, r, "OK")
 	})
-	router.Get("/thumbnail", func(w http.ResponseWriter, r *http.Request) {
-		url := r.URL.Query().Get("url")
+	router.Get("/{url}", func(w http.ResponseWriter, r *http.Request) {
+		url := chi.URLParam(r, "url")
 		if url == "" {
 			http.Error(w, http.StatusText(400), 400)
 			return
