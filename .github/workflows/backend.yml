@@ -64,11 +64,12 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
       - name: Deploy
         run: |
-          ssh-keyscan ${{ secrets.DIGITALOCEAN_CLUSTER_IP }} >> $HOME/.ssh/known_hosts
+          DIGITALOCEAN_CLUSTER_IP=$(doctl compute droplet get ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }} --template {{.PublicIPv4}})
+          ssh-keyscan $DIGITALOCEAN_CLUSTER_IP >> $HOME/.ssh/known_hosts
           doctl compute ssh ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }} --ssh-command " \
             echo ${{ secrets.DOCKER_TOKEN }} | docker login ghcr.io -u $DOCKER_USER --password-stdin
-            docker-compose -f infra/services/dratini/docker-compose.yml pull; \
-            docker-compose -f infra/services/dratini/docker-compose.yml up -d video-thumbnail-api; \
+            docker-compose -f infra/docker-compose.s2.yml pull video-thumbnail-api; \
+            docker-compose -f infra/docker-compose.s2.yml up -d video-thumbnail-api; \
           "
 
 
