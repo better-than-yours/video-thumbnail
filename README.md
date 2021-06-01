@@ -7,7 +7,7 @@ $ go mod tidy && go get -u
 
 ### dev deps
 ```sh
-$ apt-get -y install ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev
+$ apt-get update && apt-get -y install --no-install-recommends ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev
 ```
 
 ### secrets
