@@ -2,8 +2,12 @@
 
 ### go deps
 ```sh 
-$ go mod tidy
-$ go get -u
+$ go mod tidy && go get -u
+```
+
+### dev deps
+```sh
+$ apt-get -y install ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev
 ```
 
 ### secrets
@@ -11,7 +15,6 @@ $ go get -u
 REPOSITORY=lafin/template
 DOCKER_USER=lafin
 DOCKER_TOKEN=token
-DIGITALOCEAN_CLUSTER_IP=192.168.0.1
 DIGITALOCEAN_CLUSTER_NAME=s1
 DIGITALOCEAN_ACCESS_TOKEN=token
 SSH_PRIVATE_KEY=key
