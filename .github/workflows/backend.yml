@@ -23,16 +23,16 @@ jobs:
       - name: Test
         run: |
           sudo apt update && sudo apt install ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev
-          cd $GITHUB_WORKSPACE/backend && go test -timeout=60s -covermode=count -coverprofile=$GITHUB_WORKSPACE/profile.cov_tmp ./...
-          cat $GITHUB_WORKSPACE/profile.cov_tmp | grep -v "_mock.go" > $GITHUB_WORKSPACE/profile.cov
+          cd ${{ github.workspace }}/backend && go test -timeout=60s -covermode=count -coverprofile=${{ github.workspace }}/profile.cov_tmp ./...
+          cat ${{ github.workspace }}/profile.cov_tmp | grep -v "_mock.go" > ${{ github.workspace }}/profile.cov
       - name: Install golangci-lint and goveralls
         run: |
-          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $GITHUB_WORKSPACE v1.32.0
+          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b ${{ github.workspace }} v1.32.0
           GO111MODULE=off go get -u -v github.com/mattn/goveralls
       - name: Lint
-        run: cd $GITHUB_WORKSPACE/backend && $GITHUB_WORKSPACE/golangci-lint run --modules-download-mode=readonly
+        run: cd ${{ github.workspace }}/backend && ${{ github.workspace }}/golangci-lint run --modules-download-mode=readonly
       - name: Submit coverage
-        run: $(go env GOPATH)/bin/goveralls -service="github" -coverprofile=$GITHUB_WORKSPACE/profile.cov
+        run: $(go env GOPATH)/bin/goveralls -service="github" -coverprofile=${{ github.workspace }}/profile.cov
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
@@ -40,50 +40,61 @@ jobs:
     needs: [lint]
     steps:
       - uses: actions/checkout@v2
-      - name: Set env variables
-        run: |
-          echo "TAG=$(echo $GITHUB_SHA | head -c7)" >> $GITHUB_ENV
-          echo "REPOSITORY=${REPOSITORY:-$GITHUB_REPOSITORY}" >> $GITHUB_ENV
-          echo "DOCKER_USER=${DOCKER_USER:-$GITHUB_ACTOR}" >> $GITHUB_ENV
-        env:
-          REPOSITORY: ${{ secrets.REPOSITORY }}
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      - uses: hashicorp/vault-action@v2.2.0
+        id: secrets
+        with:
+          url: http://vault.lafin.me:8200
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            secret/infra/common docker-user | DOCKER_USER ;
+            secret/infra/common docker-token | DOCKER_TOKEN ;
       - name: Build image
         run: |
-          docker build --build-arg VERSION=$GITHUB_REF:$GITHUB_SHA -t ghcr.io/$REPOSITORY-api -f Dockerfile.backend .
+          REPOSITORY=ghcr.io/${{ github.repository }}-api
+          docker build --build-arg VERSION=${{ github.ref }}:${{ github.sha }} -t $REPOSITORY -f Dockerfile.backend .
       - name: Publish image
         if: github.ref == 'refs/heads/master'
         run: |
-          echo ${{ secrets.DOCKER_TOKEN }} | docker login ghcr.io -u $DOCKER_USER --password-stdin
-          docker tag ghcr.io/$REPOSITORY-api ghcr.io/$REPOSITORY-api:$TAG
-          docker push ghcr.io/$REPOSITORY-api
+          REPOSITORY=ghcr.io/${{ github.repository }}-api
+          echo ${{ env.DOCKER_TOKEN }} | docker login ghcr.io -u ${{ env.DOCKER_USER }} --password-stdin
+          docker push $REPOSITORY
   deploy:
     runs-on: ubuntu-latest
     needs: [lint, build]
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
+      - uses: hashicorp/vault-action@v2.2.0
+        id: secrets
+        with:
+          url: http://vault.lafin.me:8200
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            secret/infra/common digitalocean-cluster-name | DIGITALOCEAN_CLUSTER_NAME ;
+            secret/infra/common digitalocean-access-token | DIGITALOCEAN_ACCESS_TOKEN ;
+            secret/infra/common docker-user | DOCKER_USER ;
+            secret/infra/common docker-token | DOCKER_TOKEN ;
+            secret/infra/common ssh-private-key | SSH_PRIVATE_KEY ;
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.4.1
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - name: Set env variables
-        run: |
-          echo "DOCKER_USER=${DOCKER_USER:-$GITHUB_ACTOR}" >> $GITHUB_ENV
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          token: ${{ env.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Deploy
         run: |
-          DIGITALOCEAN_CLUSTER_IP=$(doctl compute droplet get ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }} --template {{.PublicIPv4}})
+          DIGITALOCEAN_CLUSTER_IP=$(doctl compute droplet get ${{ env.DIGITALOCEAN_CLUSTER_NAME }} --template {{.PublicIPv4}})
           ssh-keyscan $DIGITALOCEAN_CLUSTER_IP >> $HOME/.ssh/known_hosts
-          doctl compute ssh ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }} --ssh-command " \
-            echo ${{ secrets.DOCKER_TOKEN }} | docker login ghcr.io -u $DOCKER_USER --password-stdin
-            docker-compose -f infra/docker-compose.s2.yml pull video-thumbnail-api; \
-            docker-compose -f infra/docker-compose.s2.yml up -d video-thumbnail-api; \
+          doctl compute ssh ${{ env.DIGITALOCEAN_CLUSTER_NAME }} --ssh-command " \
+            echo ${{ env.DOCKER_TOKEN }} | docker login ghcr.io -u ${{ env.DOCKER_USER }} --password-stdin
+            docker-compose -f infra/docker-compose.${{ env.DIGITALOCEAN_CLUSTER_NAME }}.yml pull video-thumbnail-api; \
+            docker-compose -f infra/docker-compose.${{ env.DIGITALOCEAN_CLUSTER_NAME }}.yml up -d video-thumbnail-api; \
           "
 
 

@@ -1,6 +1,6 @@
 ### video-thumbnail [![Build Status](https://github.com/better-than-yours/video-thumbnail/workflows/backend/badge.svg)](https://github.com/better-than-yours/video-thumbnail/backend) [![Go Report Card](https://goreportcard.com/badge/github.com/better-than-yours/video-thumbnail)](https://goreportcard.com/report/github.com/better-than-yours/video-thumbnail)
 
-### go deps
+### deps
 ```sh 
 $ go mod tidy && go get -u
 ```
@@ -11,11 +11,17 @@ $ apt-get update && apt-get -y install --no-install-recommends ffmpeg libavcodec
 ```
 
 ### secrets
+
 ```sh
-REPOSITORY=lafin/template
-DOCKER_USER=lafin
-DOCKER_TOKEN=token
-DIGITALOCEAN_CLUSTER_NAME=s1
-DIGITALOCEAN_ACCESS_TOKEN=token
-SSH_PRIVATE_KEY=key
+VAULT_ROLE_ID=
+VAULT_SECRET_ID=
+```
+
+### vault
+
+```sh
+$ vault auth enable approle
+$ vault write auth/approle/role/dratini-role secret_id_ttl=0 token_policies=common-policy,dratini-policy
+$ vault read auth/approle/role/dratini-role/role-id
+$ vault write -f auth/approle/role/dratini-role/secret-id
 ```
