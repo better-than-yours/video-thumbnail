@@ -12,7 +12,5 @@ github.com/lafin/http v0.0.2 h1:u/o6zWaS/rjntIjfcCDD6ZKqHoOjUeFD69mpNegywnY=
 github.com/lafin/http v0.0.2/go.mod h1:jUx111RugC4JlfCQLzHtmBYr0QKOTHrbH43X/O0y+mw=
 gitlab.com/opennota/screengen v0.0.0-20210313035852-1f554a814ee7 h1:3UO6wAl5SJzj8sL26/RaXEUsu9wFSZfpyvdjxkIEFR4=
 gitlab.com/opennota/screengen v0.0.0-20210313035852-1f554a814ee7/go.mod h1:4kED4yriw2zslwYmXFCa5qCvEKwleBA7l5OE+d94NTU=
-gorm.io/gorm v1.21.12 h1:3fQM0Eiz7jcJEhPggHEpoYnsGZqynMzverL77DV40RM=
-gorm.io/gorm v1.21.12/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
 gorm.io/gorm v1.21.13 h1:JU5A4yVemRjdMndJ0oZU7VX+Nr2ICE3C60U5bgR6mHE=
 gorm.io/gorm v1.21.13/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
