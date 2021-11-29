@@ -11,7 +11,7 @@ import (
 
 // GetImage - get image
 func GetImage(url string) (image.Image, error) {
-	resp, err := http.Get(url, nil)
+	body, _, err := http.Get(url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func GetImage(url string) (image.Image, error) {
 		return nil, err
 	}
 	defer os.Remove(tmpfile.Name())
-	if _, err = tmpfile.Write(resp); err != nil {
+	if _, err = tmpfile.Write(body); err != nil {
 		return nil, err
 	}
 	err = tmpfile.Close()
