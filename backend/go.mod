@@ -9,5 +9,5 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/lafin/http v0.0.3
 	gitlab.com/opennota/screengen v1.0.0
-	gorm.io/gorm v1.22.4
+	gorm.io/gorm v1.22.5
 )
