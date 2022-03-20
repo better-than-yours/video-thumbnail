@@ -6,13 +6,15 @@ github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.4 h1:tHnRBy1i5F2Dh8BAFxqFzxKqqvezXrL2OW1TnX+Mlas=
 github.com/jinzhu/now v1.1.4/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
+github.com/jinzhu/now v1.1.5/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
 github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
 github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/lafin/http v0.0.3 h1:CJSaDBm/qXi3HitcANq3Da7dixptUeVKrDFjO6xV+k8=
 github.com/lafin/http v0.0.3/go.mod h1:jUx111RugC4JlfCQLzHtmBYr0QKOTHrbH43X/O0y+mw=
 gitlab.com/opennota/screengen v1.0.0 h1:NVm7k9kP0SZHbSyBJdrHtKuacRXq9XenamDV+8aiKp0=
 gitlab.com/opennota/screengen v1.0.0/go.mod h1:4kED4yriw2zslwYmXFCa5qCvEKwleBA7l5OE+d94NTU=
-gorm.io/gorm v1.23.1 h1:aj5IlhDzEPsoIyOPtTRVI+SyaN1u6k613sbt4pwbxG0=
-gorm.io/gorm v1.23.1/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
 gorm.io/gorm v1.23.2 h1:xmq9QRMWL8HTJyhAUBXy8FqIIQCYESeKfJL4DoGKiWQ=
 gorm.io/gorm v1.23.2/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
+gorm.io/gorm v1.23.3 h1:jYh3nm7uLZkrMVfA8WVNjDZryKfr7W+HTlInVgKFJAg=
+gorm.io/gorm v1.23.3/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
